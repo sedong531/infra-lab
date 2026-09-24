@@ -4,11 +4,11 @@
 
 | 구역 | VMnet | 대역 | pfSense 인터페이스 IP | VMware 모드 | 용도 |
 | --- | --- | --- | --- | --- | --- |
-| WAN | VMnet8 | 192.168.100.0/24 | 192.168.100.3 | NAT | 외부 네트워크 및 공격 테스트 |
 | OFFICE | VMnet1 | 172.16.10.0/24 | 172.16.10.2 | Host-only | 업무 영역 |
 | INTERNAL | VMnet2 | 172.16.20.0/24 | 172.16.20.2 | Host-only | 내부 서버 영역 |
 | DMZ | VMnet3 | 172.16.30.0/24 | 172.16.30.2 | Host-only | 외부 공개 서버 영역 |
 | MGMT | VMnet4 | 172.16.40.0/24 | 172.16.40.2 | Host-only | 관리 및 보안 시스템 영역 |
+| WAN | VMnet8 | 192.168.100.0/24 | 192.168.100.3 | NAT | 외부 네트워크 및 공격 테스트 |
 - 내부 네트워크의 게이트웨이는 pfSense의 각 인터페이스로 구성하였다.
 
 
@@ -25,53 +25,16 @@
 | | admin01 | 172.16.40.100 | 관리자용 사용자 PC |
 | WAN | kali | 192.168.100.100 | 외부 공격 테스트용 클라이언트 |
 
-## 3. 전체 네트워크 구성도
 
-```mermaid
-flowchart TB
-
-    Internet((Internet))
-
-    subgraph WAN["WAN / VMnet8 / 192.168.100.0/24"]
-        kali["kali<br/>192.168.100.100"]
-    end
-
-    pfSense["pfSense<br/>Firewall / Gateway"]
-
-    subgraph OFFICE["OFFICE / VMnet1 / 172.16.10.0/24"]
-        worker01["worker01<br/>172.16.10.100"]
-    end
-
-    subgraph INTERNAL["INTERNAL / VMnet2 / 172.16.20.0/24"]
-        intra01["intra01<br/>172.16.20.10"]
-        db01["db01<br/>172.16.20.20"]
-    end
-
-    subgraph DMZ["DMZ / VMnet3 / 172.16.30.0/24"]
-        pub01["pub01<br/>172.16.30.10"]
-        ns01["ns01<br/>172.16.30.20"]
-    end
-
-    subgraph MGMT["MGMT / VMnet4 / 172.16.40.0/24"]
-        wazuh01["wazuh01<br/>172.16.40.10"]
-        admin01["admin01<br/>172.16.40.100"]
-    end
-
-    Internet --> WAN
-    WAN --> pfSense
-
-    pfSense --> OFFICE
-    pfSense --> INTERNAL
-    pfSense --> DMZ
-    pfSense --> MGMT
-```
-
-
-## 4. 주소 및 네트워크 구성 기준
+## 3. 주소 및 네트워크 구성 기준
 
 네트워크는 역할에 따라 WAN, OFFICE, INTERNAL, DMZ, MGMT 영역으로 분리하였다.
 
 IP 주소는 VM의 역할을 쉽게 식별할 수 있도록 다음 기준으로 할당하였다.
-- .2 : pfSense 각 네트워크 인터페이스
-- .10 ~ .20 : 서버
-- .100 : 사용자 PC 및 테스트 클라이언트
+- `.2` : pfSense 각 네트워크 인터페이스
+
+    ※ WAN은 VMware NAT 게이트웨이가 `.2`를 사용하므로 pfSense 인터페이스에 `.3`을 할당하였다.
+
+- `.10` ~ `.20` : 서버
+
+- `.100` : 사용자 PC 및 테스트 클라이언트
