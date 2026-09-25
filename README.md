@@ -39,7 +39,7 @@ subgraph OFFICE
 end
 
 subgraph INTERNAL
-   intra01["Web Server\n(itra01)"]
+   intra01["Web Server\n(intra01)"]
    db01["DB Server\n(db01)"]
 end
 
@@ -57,6 +57,8 @@ pfsense --> OFFICE
 pfsense --> INTERNAL
 pfsense --> DMZ
 pfsense --> MGMT
+
+
 
 ```
 ## 로그 수집 흐름
@@ -89,8 +91,12 @@ DNS -->|"Wazuh Agent\nTCP/1514"| WAZUH
 ```
 
 
+## 결과
 
-
+- pfSense Firewall을 통한 네트워크 영역 간 접근통제 적용 및 동작 확인
+- IDS/IPS를 통한 네트워크 공격 탐지·차단 확인
+- WAF를 통한 웹 공격 탐지·차단 확인
+- pfSense Firewall / Suricata / WAF / Server 로그의 Wazuh 연동 및 이벤트 확인
 
 
 
